@@ -67,3 +67,62 @@ document.getElementById("locate-btn").addEventListener("click", () => {
 
 // Initial load
 loadPlaces();
+
+const form = document.getElementById("place-form");
+
+if (form) {
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+
+        const payload = {
+          name: document.getElementById("place-name").value,
+          category: document.getElementById("place-category").value,
+          description: document.getElementById("place-description").value,
+          location: {
+            type: "Point",
+            coordinates: [longitude, latitude], // GeoJSON: [lng, lat]
+          },
+        };
+
+        try {
+          const response = await fetch("/api/places/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!response.ok) {
+            const errText = await response.text();
+            console.error("Error from API:", errText);
+            alert("Error creating place (check console)");
+            return;
+          }
+
+          // Success
+          alert("Place created!");
+          form.reset();
+          loadPlaces(); // refresh markers & list
+
+        } catch (err) {
+          console.error("Network error:", err);
+          alert("Network error – see console");
+        }
+      },
+      (err) => {
+        console.error("Geolocation error:", err);
+        alert("Could not get your location");
+      }
+    );
+  });
+}

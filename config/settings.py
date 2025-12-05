@@ -9,9 +9,9 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
-from pathlib import Path
 import os
+from pathlib import Path
+import platform
 
 # --- GeoDjango / GDAL config for Windows ---
 if os.name == "nt":  # 'nt' means Windows
@@ -26,8 +26,10 @@ if os.name == "nt":  # 'nt' means Windows
     # If the folder doesn't exist we just skip this; Django will complain later if GDAL is missing
 # --- end GeoDjango / GDAL config ---
 
-GDAL_LIBRARY_PATH = r"C:\OSGeo4W\bin\gdal311.dll" 
-GEOS_LIBRARY_PATH = r"C:\OSGeo4W\bin\geos_c.dll"
+if platform.system() == "Windows":
+    os.environ.setdefault("GDAL_LIBRARY_PATH", r"C:\OSGeo4W\bin\gdal311.dll")
+    os.environ.setdefault("GEOS_LIBRARY_PATH", r"C:\OSGeo4W\bin\geos_c.dll")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -106,13 +108,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": "lbsdb",          # name of the database you created
-        "USER": "lbsuser",        # the postgres user you created
-        "PASSWORD": "lbspassword",# that user's password
-        "HOST": "localhost",      # 'localhost' for local dev
-        "PORT": "5432",           # default Postgres port
+        "NAME": os.getenv("POSTGRES_DB", "lbsdb"),
+        "USER": os.getenv("POSTGRES_USER", "lbsuser"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "lbspassword"),
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),  # 'localhost' for local dev
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
+
 
 
 # Password validation
@@ -157,3 +160,11 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",  # dev only – open API
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [],  # no auth, no CSRF for now
+}
+

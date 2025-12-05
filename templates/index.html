@@ -31,6 +31,28 @@
   <main>
     <div id="map"></div>
     <div id="places-list"></div>
+
+    <section id="add-place">
+      <h2>Add a Place</h2>
+      <form id="place-form">
+        <label>
+          Name:
+          <input type="text" id="place-name" required>
+        </label>
+
+        <label>
+          Category:
+          <input type="text" id="place-category" placeholder="cafe, park, pub, other" required>
+        </label>
+
+        <label>
+          Description:
+          <textarea id="place-description" rows="3"></textarea>
+        </label>
+
+        <button type="submit">Save using my current location</button>
+      </form>
+    </section>
   </main>
 
   <!-- Leaflet JS -->

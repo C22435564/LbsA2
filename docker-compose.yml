@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: lbs_db
+    environment:
+      POSTGRES_DB: lbsdb
+      POSTGRES_USER: lbsuser
+      POSTGRES_PASSWORD: lbspassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: lbs_web
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      POSTGRES_DB: lbsdb
+      POSTGRES_USER: lbsuser
+      POSTGRES_PASSWORD: lbspassword
+      POSTGRES_HOST: db       # communicates to db service
+      POSTGRES_PORT: 5432
+
+volumes:
+  postgres_data:
