@@ -2,68 +2,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>LBS Service Finder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- PWA manifest -->
   <link rel="manifest" href="{% static 'manifest.webmanifest' %}">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#0f172a">
 
-  <!-- Leaflet CSS -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""
-  />
+  >
 
-  <!-- Your CSS -->
-  <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-  <header>
-    <h1>LBS Service Finder</h1>
-    <button id="locate-btn">Locate Me</button>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-logo">LBS</span>
+      <span class="brand-title">Service Finder</span>
+    </div>
+    <button id="install-btn" class="btn btn-outline">Install App</button>
   </header>
 
-  <main>
-    <div id="map"></div>
-    <div id="places-list"></div>
+  <main class="app-main">
+    <section class="map-panel">
+      <div class="toolbar">
+        <button id="locate-btn" class="btn btn-primary">Locate Me</button>
 
-    <section id="add-place">
-      <h2>Add a Place</h2>
-      <form id="place-form">
-        <label>
-          Name:
-          <input type="text" id="place-name" required>
-        </label>
+        <select id="category-filter" class="select">
+          <option value="">All categories</option>
+          <option value="pub">Pubs</option>
+          <option value="cafe">Cafés</option>
+          <option value="park">Parks</option>
+          <option value="other">Other</option>
+        </select>
 
-        <label>
-          Category:
-          <input type="text" id="place-category" placeholder="cafe, park, pub, other" required>
-        </label>
+        <select id="distance-filter" class="select">
+          <option value="">Any distance</option>
+          <option value="500">Within 500 m</option>
+          <option value="1000">Within 1 km</option>
+          <option value="2000">Within 2 km</option>
+          <option value="5000">Within 5 km</option>
+        </select>
 
-        <label>
-          Description:
-          <textarea id="place-description" rows="3"></textarea>
-        </label>
+        <input id="search-input" class="input" placeholder="Search places..." />
+      </div>
+      <div id="map"></div>
+    </section>
 
-        <button type="submit">Save using my current location</button>
-      </form>
+    <section class="side-panel">
+      <div class="panel-section">
+        <h2 class="panel-title">Places</h2>
+        <div id="places-list"></div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">Add a Place</h2>
+        <form id="place-form" class="form">
+          <label class="field">
+            <span>Name</span>
+            <input type="text" id="place-name" required>
+          </label>
+          <label class="field">
+            <span>Category</span>
+            <select id="place-category" required>
+              <option value="pub">Pub</option>
+              <option value="cafe">Café</option>
+              <option value="park">Park</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Description</span>
+            <textarea id="place-description" rows="3"></textarea>
+          </label>
+          <button type="submit" class="btn btn-primary full-width">
+            Save using my current location
+          </button>
+        </form>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">Upcoming Events</h2>
+        <div id="events-list"></div>
+      </div>
     </section>
   </main>
 
-  <!-- Leaflet JS -->
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin="">
   </script>
-
-  <!-- Your app JS -->
-  <script src="{% static 'app.js' %}"></script>
+  <script src="{% static 'js/app.js' %}"></script>
 
   <script>
     if ("serviceWorker" in navigator) {
