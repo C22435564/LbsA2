@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+header {
+  padding: 0.5rem 1rem;
+  background: #222;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#map {
+  height: 60vh;
+}
+
+#places-list {
+  padding: 1rem;
+  max-height: 40vh;
+  overflow-y: auto;
+  border-top: 1px solid #ddd;
+}
+
+.place-item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
